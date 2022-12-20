@@ -1,9 +1,25 @@
 .App {
   text-align: center;
+  display: flex;
+
+}
+.container{
+  display: flex;
+  justify-content: center;
+}
+.btn{
+  width: full;
+}
+.sidebar{
+  display: flex;
+  width: 30%;
+  background-color: rgb(41, 41, 41);
+
 }
 
 .App-header {
-  background-color: #282c34;
+  width: 100%;
+  background-color: #575757;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
