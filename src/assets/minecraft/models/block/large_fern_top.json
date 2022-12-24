@@ -1,0 +1,10 @@
+{
+	"credit": "Made with Blockbench",
+	"ambientocclusion": false,
+	"display": {
+		"head": {
+			"translation": [0, -29, 0],
+			"scale": [1.6, 1.6, 1.6]
+		}
+	}
+}
