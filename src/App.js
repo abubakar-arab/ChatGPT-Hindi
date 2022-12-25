@@ -38,7 +38,7 @@ function App() {
   let loadInterval;
   // Function for loading animation of bot
   function loader(element) {
-    element.textContent = "";
+    element.textContent = " ";
     loadInterval = setInterval(() => {
       element.textContent += ".";
       if (element.textContext === "....") {
@@ -82,6 +82,7 @@ function App() {
         value={data.get("prompt")}
         uniqueId={uniqueUserId}
         key = {uniqueUserId}
+        ref={messageDivRef} 
       />,
     ]);
 
@@ -89,10 +90,10 @@ function App() {
 
     // ai's chat stripes
     const uniqueId = generateUniqueId();
-    const messageDiv = document.getElementById(uniqueId);
+    const messageDiv = messageDivRef.current;
     setChatStripes([
       ...chatStripes,
-      <ChatStripe isAi={true} value="" uniqueId={uniqueId} key = {uniqueId}/>,
+      <ChatStripe isAi={true} value="" uniqueId={uniqueId} key = {uniqueId} ref={messageDivRef} />,
     ]);
 
     chatContainer.scrollTop = chatContainer.scrollHeight;
@@ -103,7 +104,6 @@ function App() {
     <>
       <div id="app">
         <div id="chat_container" ref={chatContainerRef}>
-          
           <form ref={formRef}>
             <textarea
               name="prompt"
