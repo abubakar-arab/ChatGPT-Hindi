@@ -2,13 +2,12 @@ import "./App.css";
 import SideBar from "./components/SideBar.js";
 import bootstrap from "bootstrap";
 import sendLogo from "./assets/send.svg";
-import bot from "./assets/bot.svg";
-import user from "./assets/user.svg";
-import { useRef, useEffect } from "react";
-
-
+import { useRef, useEffect, useState } from "react";
+import ChatStripe from "./components/ChatStripe";
 
 function App() {
+  const [chatStripes, setChatStripes] = useState([]);
+  const [chatUserStripes, setChatUserStripes] = useState([]);
   const formRef = useRef(null);
   const chatContainerRef = useRef(null);
   const messageDivRef = useRef(null);
@@ -18,8 +17,8 @@ function App() {
     const form = formRef.current;
     const chatContainer = chatContainerRef.current;
     const messageDiv = messageDivRef.current;
-    
-    form.addEventListener("submit",handleSubmit);
+
+    form.addEventListener("submit", handleSubmit);
     // form.addEventListener("keyup", (e) => {
     //   if (e.keyCode === 13) {
     //     handleSubmit(e);
@@ -32,7 +31,7 @@ function App() {
     // the returned function will be called when the component is unmounted
     return () => {
       // remove the event listener when the component is unmounted
-      form.removeEventListener('submit', handleSubmit);
+      form.removeEventListener("submit", handleSubmit);
     };
   }, []);
 
@@ -42,7 +41,7 @@ function App() {
     element.textContent = "";
     loadInterval = setInterval(() => {
       element.textContent += ".";
-      if (element.textContent === "....") {
+      if (element.textContext === "....") {
         element.textContent = "";
       }
     }, 300);
@@ -66,56 +65,45 @@ function App() {
 
     return `id-${timestamp}-${hexadecimalString}`;
   }
-  // Function for generating chatstripe
-  function chatStripe(isAi, value, uniqueId) {
-    return `
-      <div className = "wrapper ${isAi && "ai"}">
-      <div className = "chat">
-        <div className = "profile">
-        <img src = "${isAi ? bot : user}" alt = "${isAi ? "bot" : "user"}"/>
-        
-        </div>
-        <div className = "message" id = ${uniqueId}>${value}</div>
-      </div>
-
-      </div>
-      `;
-  }
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     const form = formRef.current;
-    
-    
-
-
     const data = new FormData(form);
 
     // user's chat stripe
     const chatContainer = chatContainerRef.current;
-    chatContainer.innerHTML += chatStripe(false, data.get("prompt"));
+    // Add a new ChatStripe component to the chat container element
+    const uniqueUserId = generateUniqueId();
+    setChatUserStripes([
+      ...chatUserStripes,
+      <ChatStripe
+        isAi={false}
+        value={data.get("prompt")}
+        uniqueId={uniqueUserId}
+        key = {uniqueUserId}
+      />,
+    ]);
 
     form.reset();
 
     // ai's chat stripes
     const uniqueId = generateUniqueId();
     const messageDiv = document.getElementById(uniqueId);
-    chatContainer.innerHTML += chatStripe(true, " ", uniqueId);
+    setChatStripes([
+      ...chatStripes,
+      <ChatStripe isAi={true} value="" uniqueId={uniqueId} key = {uniqueId}/>,
+    ]);
 
     chatContainer.scrollTop = chatContainer.scrollHeight;
-
-    
-    
     loader(messageDiv);
   };
 
   return (
     <>
-      <div id = "app">
-        {/* <header className="App-header">
-          <p>ChatGPT Hindi</p>
-        </header> */}
+      <div id="app">
         <div id="chat_container" ref={chatContainerRef}>
+          
           <form ref={formRef}>
             <textarea
               name="prompt"
@@ -127,6 +115,8 @@ function App() {
               <img src={sendLogo} alt="Send" />
             </button>
           </form>
+          {chatUserStripes}
+          {chatStripes}
         </div>
       </div>
     </>
