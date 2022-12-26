@@ -130,8 +130,6 @@ function App() {
       messageDiv.innerHTML = "Something went wrong";
       alert(err);
     }
-
-
   };
 
   return (
