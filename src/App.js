@@ -81,8 +81,8 @@ function App() {
         isAi={false}
         value={data.get("prompt")}
         uniqueId={uniqueUserId}
-        key = {uniqueUserId}
-        ref={messageDivRef} 
+        key={uniqueUserId}
+        ref={messageDivRef}
       />,
     ]);
 
@@ -93,11 +93,45 @@ function App() {
     const messageDiv = messageDivRef.current;
     setChatStripes([
       ...chatStripes,
-      <ChatStripe isAi={true} value="" uniqueId={uniqueId} key = {uniqueId} ref={messageDivRef} />,
+      <ChatStripe
+        isAi={true}
+        value=""
+        uniqueId={uniqueId}
+        key={uniqueId}
+        ref={messageDivRef}
+      />,
     ]);
 
     chatContainer.scrollTop = chatContainer.scrollHeight;
     loader(messageDiv);
+
+    //fetch data from the server
+    const response = await fetch("http://localhost:5000", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        prompt: data.get("prompt"),
+      }),
+    });
+
+    clearInterval(loadInterval);
+
+    messageDiv.innerHTML = '';
+
+    if(response.ok){
+      const data = await response.json();
+      const parsedData = data.bot.trim();
+      typeText(messageDiv, parsedData); 
+    }else{
+      const err = await response.text();
+
+      messageDiv.innerHTML = "Something went wrong";
+      alert(err);
+    }
+
+
   };
 
   return (
