@@ -118,13 +118,13 @@ function App() {
 
     clearInterval(loadInterval);
 
-    messageDiv.innerHTML = '';
+    messageDiv.innerHTML = "";
 
-    if(response.ok){
+    if (response.ok) {
       const data = await response.json();
       const parsedData = data.bot.trim();
-      typeText(messageDiv, parsedData); 
-    }else{
+      typeText(messageDiv, parsedData);
+    } else {
       const err = await response.text();
 
       messageDiv.innerHTML = "Something went wrong";
@@ -134,22 +134,28 @@ function App() {
 
   return (
     <>
-      <div id="app">
-        <div id="chat_container" ref={chatContainerRef}>
-          <form ref={formRef}>
-            <textarea
-              name="prompt"
-              cols="1"
-              rows="1"
-              placeholder="Ask Codebuddy..."
-            ></textarea>
-            <button type="submit">
-              <img src={sendLogo} alt="Send" />
-            </button>
-          </form>
-          {chatUserStripes}
-          {chatStripes}
-        </div>
+      <div className="App">
+        <aside className="sidemenu">
+          <div className="side-menu-button">
+            <span>+</span>
+            New Chat
+          </div>
+        </aside>
+        <section className="chatbox" ref={chatContainerRef}>
+          <div className="chat-input-holder">
+            <form ref={formRef}>
+              <textarea className="chat-input-text-area"
+                name="prompt"
+                rows="1"
+              ></textarea>
+              <button type="submit">
+                <img src={sendLogo} alt="Send" />
+              </button>
+            </form>
+            {chatUserStripes}
+            {chatStripes}
+          </div>
+        </section>
       </div>
     </>
   );
