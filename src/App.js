@@ -3,16 +3,18 @@ import "./App.css";
 import bootstrap from "bootstrap";
 import sendLogo from "./assets/send.svg";
 import { useRef, useEffect, useState } from "react";
+import bot from "./assets/bot.svg";
+import user from "./assets/user.svg";
 
 
 function App() {
   const [input, setInput] = useState("");
   const [chatLog, setChatLog] = useState([{
-    user : "gpt",
-    message : "Abu, How can I help you today?"
+    user : "me",
+    message : "Hi Chatbot, I am Abu"
   },{
-    user : "user",
-    message : "Yes I am Abu"
+    user : "gpt",
+    message : "Hi Abu, How can I help you today?"
   }
 ]);
 function clearChat(){
@@ -92,7 +94,7 @@ function clearChat(){
             ))}
           </div>
           <div className="chat-input-holder">
-            <form ref={formRef} onSubmit={handleSubmit}>
+            <form className = "form" ref={formRef} onSubmit={handleSubmit}>
               <input
                 className="chat-input-text-area"
                 name="prompt"
@@ -115,7 +117,9 @@ const ChatMessage = ({ message }) => {
   return (
     <div className={`chat-message ${message.user === "gpt" && "chatgpt"}`}>
       <div className="chat-message-center">
-        <div className={`avatar ${message.user === "gpt" && "chatgpt"}`}></div>
+        <div className={`avatar ${message.user === "gpt" && "chatgpt"}`}>
+          <img className={'pic'} src={message.user === "gpt" ? bot : user} alt="" />
+        </div>
         <div className="message">{message.message}</div>
       </div>
     </div>

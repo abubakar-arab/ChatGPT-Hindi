@@ -53,7 +53,7 @@
   padding-right: 12px;
 }
 .chat-input-holder{
-  padding: 24px;
+  padding: 12px;
   position: absolute;
   bottom: 0;
   left: 0;
@@ -61,11 +61,13 @@
 }
 .chat-input-text-area{
   background-color: #40414f;
-  width: 90%;
-  border: 5px;
+  width: 100%;
+  padding: 12px;
+  border-radius: 5px;
   border: none;
+  margin: 12px;
   outline: none;
-  font-size: 1.25em;
+  font-size: 1em;
   box-shadow: 0 0 8px 0 rgba(0, 0, 0, 0.25);
   color: white;
 }
@@ -114,11 +116,16 @@
 
 }
 .avatar{
-  background-color: white;
+  background-color: #044f41;
   border-radius: 50%;
   width: 40px;
   height: 40px;
-
+}
+.avatar.chatgpt{
+  background-color: #10a37f;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
 }
 .message{
   padding-right: 40px;
@@ -242,17 +249,14 @@
   display: none;
 }
 
-/* form {
-  width: 100%;
+.form {
   max-width: 1280px;
   margin: 0 auto;
   padding: 10px;
-  background: #40414F;
-
   display: flex;
   flex-direction: row;
-  gap: 10px;
-} */
+  justify-content: space-between;
+}
 
 /* textarea {
   width: 100%;
@@ -274,7 +278,12 @@ button {
   background: transparent;
 }
 
-/* form img {
+form img {
   width: 30px;
   height: 30px;
-} */
+}
+
+.pic {
+  padding: 15%;
+  width: 70%;
+}
