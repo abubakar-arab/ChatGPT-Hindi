@@ -142,9 +142,24 @@ function App() {
           </div>
         </aside>
         <section className="chatbox" ref={chatContainerRef}>
+          <div className="chat-log">
+            <div className="chat-message">
+              <div className="chat-message-center">
+                <div className="avatar"></div>
+                <div className="message">Helol World</div>
+              </div>
+            </div>
+            <div className="chat-message chatgpt">
+              <div className="chat-message-center">
+                <div className="avatar"></div>
+                <div className="message">I am an AI</div>
+              </div>
+            </div>
+          </div>
           <div className="chat-input-holder">
             <form ref={formRef}>
-              <textarea className="chat-input-text-area"
+              <textarea
+                className="chat-input-text-area"
                 name="prompt"
                 rows="1"
               ></textarea>
