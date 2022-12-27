@@ -39,7 +39,7 @@
 }
 .side-menu-button{
   padding: 12px;
-  border: 1px solid white;
+  border: 1px solid rgb(102, 102, 102);
   border-radius: 5px;
   text-align: left;
   transition: ease 0.25s all;

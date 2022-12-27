@@ -1,39 +1,26 @@
 import "./App.css";
-import SideBar from "./components/SideBar.js";
+
 import bootstrap from "bootstrap";
 import sendLogo from "./assets/send.svg";
 import { useRef, useEffect, useState } from "react";
-import ChatStripe from "./components/ChatStripe";
+
 
 function App() {
-  const [chatStripes, setChatStripes] = useState([]);
-  const [chatUserStripes, setChatUserStripes] = useState([]);
+  const [input, setInput] = useState("");
+  const [chatLog, setChatLog] = useState([{
+    user : "gpt",
+    message : "Abu, How can I help you today?"
+  },{
+    user : "user",
+    message : "Yes I am Abu"
+  }
+]);
+function clearChat(){
+  setChatLog([]);
+} 
+
   const formRef = useRef(null);
   const chatContainerRef = useRef(null);
-  const messageDivRef = useRef(null);
-
-  useEffect(() => {
-    // you can now use the `formRef` variable to access the form element
-    const form = formRef.current;
-    const chatContainer = chatContainerRef.current;
-    const messageDiv = messageDivRef.current;
-
-    form.addEventListener("submit", handleSubmit);
-    // form.addEventListener("keyup", (e) => {
-    //   if (e.keyCode === 13) {
-    //     handleSubmit(e);
-    //   }
-    // });
-
-    // add an event listener to the form element
-    // form.addEventListener('submit',handleSubmit);
-
-    // the returned function will be called when the component is unmounted
-    return () => {
-      // remove the event listener when the component is unmounted
-      form.removeEventListener("submit", handleSubmit);
-    };
-  }, []);
 
   let loadInterval;
   // Function for loading animation of bot
@@ -67,113 +54,72 @@ function App() {
   }
 
   const handleSubmit = async (e) => {
+    
     e.preventDefault();
-    const form = formRef.current;
-    const data = new FormData(form);
-
-    // user's chat stripe
-    const chatContainer = chatContainerRef.current;
-    // Add a new ChatStripe component to the chat container element
-    const uniqueUserId = generateUniqueId();
-    setChatUserStripes([
-      ...chatUserStripes,
-      <ChatStripe
-        isAi={false}
-        value={data.get("prompt")}
-        uniqueId={uniqueUserId}
-        key={uniqueUserId}
-        ref={messageDivRef}
-      />,
-    ]);
-
-    form.reset();
-
-    // ai's chat stripes
-    const uniqueId = generateUniqueId();
-    const messageDiv = messageDivRef.current;
-    setChatStripes([
-      ...chatStripes,
-      <ChatStripe
-        isAi={true}
-        value=""
-        uniqueId={uniqueId}
-        key={uniqueId}
-        ref={messageDivRef}
-      />,
-    ]);
-
-    chatContainer.scrollTop = chatContainer.scrollHeight;
-    loader(messageDiv);
-
+    let chatLogNew = [...chatLog, { user: "me", message: `${input}` }]
+    await setInput("");
+    setChatLog(chatLogNew);
     //fetch data from the server
+    const messages = chatLogNew.map((message) => message.message).join("\n")
     const response = await fetch("http://localhost:5000", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        prompt: data.get("prompt"),
+        message: messages
       }),
     });
 
-    clearInterval(loadInterval);
+    const data = await response.json();
+    await setChatLog([...chatLogNew, {user : "gpt", message : `${data.message}`}])
 
-    messageDiv.innerHTML = "";
-
-    if (response.ok) {
-      const data = await response.json();
-      const parsedData = data.bot.trim();
-      typeText(messageDiv, parsedData);
-    } else {
-      const err = await response.text();
-
-      messageDiv.innerHTML = "Something went wrong";
-      alert(err);
-    }
   };
 
   return (
     <>
       <div className="App">
         <aside className="sidemenu">
-          <div className="side-menu-button">
+          <div className="side-menu-button" onClick={clearChat}>
             <span>+</span>
             New Chat
           </div>
         </aside>
         <section className="chatbox" ref={chatContainerRef}>
           <div className="chat-log">
-            <div className="chat-message">
-              <div className="chat-message-center">
-                <div className="avatar"></div>
-                <div className="message">Helol World</div>
-              </div>
-            </div>
-            <div className="chat-message chatgpt">
-              <div className="chat-message-center">
-                <div className="avatar"></div>
-                <div className="message">I am an AI</div>
-              </div>
-            </div>
+            {chatLog.map((message, index) => (
+              <ChatMessage key = {index} message={message} />
+            ))}
           </div>
           <div className="chat-input-holder">
-            <form ref={formRef}>
-              <textarea
+            <form ref={formRef} onSubmit={handleSubmit}>
+              <input
                 className="chat-input-text-area"
                 name="prompt"
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
                 rows="1"
-              ></textarea>
+              ></input>
               <button type="submit">
                 <img src={sendLogo} alt="Send" />
               </button>
             </form>
-            {chatUserStripes}
-            {chatStripes}
           </div>
         </section>
       </div>
     </>
   );
 }
+
+const ChatMessage = ({ message }) => {
+  return (
+    <div className={`chat-message ${message.user === "gpt" && "chatgpt"}`}>
+      <div className="chat-message-center">
+        <div className={`avatar ${message.user === "gpt" && "chatgpt"}`}></div>
+        <div className="message">{message.message}</div>
+      </div>
+    </div>
+  );
+};
 
 export default App;
