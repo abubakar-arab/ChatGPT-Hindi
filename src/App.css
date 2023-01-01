@@ -53,7 +53,7 @@
   padding-right: 12px;
 }
 .chat-input-holder{
-  padding: 12px;
+  padding: 25px;
   position: absolute;
   bottom: 0;
   left: 0;
@@ -104,12 +104,13 @@
   
   background-color: #444654;
   
+  
 }
 .chat-message-center{
   max-width: 640px;
   margin-left: auto;
   margin-right: auto;
-  padding: 12px;
+  padding: 20px;
   padding-left: 24px;
   display: flex;
   padding-right: 24px;
@@ -222,7 +223,19 @@
   height: 60%;
   object-fit: contain;
 }
+.footer{
+  font-size: 12px;
+  color : #a0a1ad;
+  bottom: 0;
+  position: absolute;
+  left: 0;
+  right: 0;
+  margin: 23px;
+}
+.footer a{
+  color: #a0a1ad;
 
+}
 /* .message {
   flex: 1;
 

@@ -107,7 +107,9 @@ function clearChat(){
                 <img src={sendLogo} alt="Send" />
               </button>
             </form>
+            
           </div>
+          <div className="footer">A ChatGPT clone developed by <a href="https://github.com/abubakar-arab">Abubakar Arab</a></div>
         </section>
       </div>
     </>
