@@ -1,26 +1,27 @@
 import "./App.css";
 
-import Typing from "./components/Typing"
+import Typing from "./components/Typing";
 import bootstrap from "bootstrap";
 import sendLogo from "./assets/send.svg";
 import { useRef, useEffect, useState } from "react";
 import bot from "./assets/bot.svg";
 import user from "./assets/user.svg";
 
-
 function App() {
   const [input, setInput] = useState("");
-  const [chatLog, setChatLog] = useState([{
-    user : "me",
-    message : "Hi Chatbot, I am Abu"
-  },{
-    user : "gpt",
-    message : "Hi Abu, How can I help you today?"
+  const [chatLog, setChatLog] = useState([
+    {
+      user: "me",
+      message: "Hi Chatbot, I am Abu",
+    },
+    {
+      user: "gpt",
+      message: "Hi Abu, How can I help you today?",
+    },
+  ]);
+  function clearChat() {
+    setChatLog([]);
   }
-]);
-function clearChat(){
-  setChatLog([]);
-} 
 
   const formRef = useRef(null);
   const chatContainerRef = useRef(null);
@@ -57,26 +58,27 @@ function clearChat(){
   }
 
   const handleSubmit = async (e) => {
-    
     e.preventDefault();
-    let chatLogNew = [...chatLog, { user: "me", message: `${input}` }]
+    let chatLogNew = [...chatLog, { user: "me", message: `${input}` }];
     await setInput("");
     setChatLog(chatLogNew);
     //fetch data from the server
-    const messages = chatLogNew.map((message) => message.message).join("\n")
+    const messages = chatLogNew.map((message) => message.message).join("\n");
     const response = await fetch("http://localhost:5000", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        message: messages
+        message: messages,
       }),
     });
 
     const data = await response.json();
-    await setChatLog([...chatLogNew, {user : "gpt", message : `${data.message}`}])
-
+    await setChatLog([
+      ...chatLogNew,
+      { user: "gpt", message: `${data.message}` },
+    ]);
   };
 
   return (
@@ -89,13 +91,17 @@ function clearChat(){
           </div>
         </aside>
         <section className="chatbox" ref={chatContainerRef}>
+          <div className="fixed-chat-box">
           <div className="chat-log">
             {chatLog.map((message, index) => (
-              <ChatMessage key = {index} message={message} />
+              <ChatMessage key={index} message={message} />
             ))}
           </div>
+
+          </div>
+          
           <div className="chat-input-holder">
-            <form className = "form" ref={formRef} onSubmit={handleSubmit}>
+            <form className="form" ref={formRef} onSubmit={handleSubmit}>
               <input
                 className="chat-input-text-area"
                 name="prompt"
@@ -107,9 +113,11 @@ function clearChat(){
                 <img src={sendLogo} alt="Send" />
               </button>
             </form>
-            
+            <div className="footer">
+              A ChatGPT clone developed by{" "}
+              <a href="https://github.com/abubakar-arab">Abubakar Arab</a>
+            </div>
           </div>
-          <div className="footer">A ChatGPT clone developed by <a href="https://github.com/abubakar-arab">Abubakar Arab</a></div>
         </section>
       </div>
     </>
@@ -121,9 +129,19 @@ const ChatMessage = ({ message }) => {
     <div className={`chat-message ${message.user === "gpt" && "chatgpt"}`}>
       <div className="chat-message-center">
         <div className={`avatar ${message.user === "gpt" && "chatgpt"}`}>
-          <img className={'pic'} src={message.user === "gpt" ? bot : user} alt="" />
+          <img
+            className={"pic"}
+            src={message.user === "gpt" ? bot : user}
+            alt=""
+          />
         </div>
-        <div className="message"> {message.user === "gpt" ? <Typing text={message.message} typingSpeed={20} /> : message.message}
+        <div className="message">
+          {" "}
+          {message.user === "gpt" ? (
+            <Typing text={message.message} typingSpeed={20} />
+          ) : (
+            message.message
+          )}
         </div>
       </div>
     </div>
