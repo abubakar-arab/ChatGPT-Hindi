@@ -1,5 +1,6 @@
 import "./App.css";
 
+import Typing from "./components/Typing"
 import bootstrap from "bootstrap";
 import sendLogo from "./assets/send.svg";
 import { useRef, useEffect, useState } from "react";
@@ -120,7 +121,8 @@ const ChatMessage = ({ message }) => {
         <div className={`avatar ${message.user === "gpt" && "chatgpt"}`}>
           <img className={'pic'} src={message.user === "gpt" ? bot : user} alt="" />
         </div>
-        <div className="message">{message.message}</div>
+        <div className="message"> {message.user === "gpt" ? <Typing text={message.message} typingSpeed={20} /> : message.message}
+        </div>
       </div>
     </div>
   );
