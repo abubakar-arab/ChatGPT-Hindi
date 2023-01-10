@@ -1,5 +1,5 @@
 import "./App.css";
-
+import axios from "axios";
 import Typing from "./components/Typing";
 import bootstrap from "bootstrap";
 import sendLogo from "./assets/send.svg";
@@ -92,14 +92,18 @@ function App() {
         </aside>
         <section className="chatbox" ref={chatContainerRef}>
           <div className="fixed-chat-box">
-          <div className="chat-log">
-            {chatLog.map((message, index) => (
-              <ChatMessage key={index} message={message} />
-            ))}
+            <div className="chat-log">
+              {chatLog.map((message, index) => (
+                <ChatMessage
+                  key={index}
+                  message={message}
+                  chatLog={chatLog}
+                  setChatLog={setChatLog}
+                />
+              ))}
+            </div>
           </div>
 
-          </div>
-          
           <div className="chat-input-holder">
             <form className="form" ref={formRef} onSubmit={handleSubmit}>
               <input
@@ -124,7 +128,43 @@ function App() {
   );
 }
 
-const ChatMessage = ({ message }) => {
+const ChatMessage = ({ message, chatLog, setChatLog }) => {
+  // Function to translate a message to Hindi
+  const translateToHindi = async (message) => {
+    const encodedParams = new URLSearchParams();
+    encodedParams.append("q", message);
+    encodedParams.append("target", "hi");
+    encodedParams.append("source", "en");
+    const options = {
+      method: "POST",
+      url: "https://google-translate1.p.rapidapi.com/language/translate/v2",
+      headers: {
+        "content-type": "application/x-www-form-urlencoded",
+        "X-RapidAPI-Key": "5a5aa87e8bmshb1f4d88e4a07574p1b6a40jsn149f9c1f4619",
+        "X-RapidAPI-Host": "google-translate1.p.rapidapi.com",
+      },
+      data: encodedParams,
+    };
+    try {
+      const { data } = await axios.post(options.url, encodedParams, { headers: options.headers });
+      return data.data.translations[0].translatedText;
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  // Handles translation of message
+  const handleTranslate = async (message) => {
+    const translatedMessage = await translateToHindi(message);
+    console.log(`translatedMessage,${translatedMessage}`)
+    const newChatLog = [...chatLog, {
+      user: "gpt",
+      message: translatedMessage,
+    }];
+    // console.log(newChatLog)
+    // setChatLog(newChatLog);
+    // console.log(...chatLog);
+    
+  };
   return (
     <div className={`chat-message ${message.user === "gpt" && "chatgpt"}`}>
       <div className="chat-message-center">
@@ -138,7 +178,12 @@ const ChatMessage = ({ message }) => {
         <div className="message">
           {" "}
           {message.user === "gpt" ? (
-            <Typing text={message.message} typingSpeed={20} />
+            <>
+              <Typing text={message.message} typingSpeed={20} />
+              <button onClick={() => handleTranslate(message.message)}>
+                Translate in Hindi
+              </button>
+            </>
           ) : (
             message.message
           )}
